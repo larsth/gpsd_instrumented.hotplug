@@ -23,37 +23,45 @@ PATH=/usr/sbin:$PATH
 export PATH
 
 if [ -r /etc/default/gpsd ]; then
+  logger -t "gpsd_instrumented.hotplug" -p daemon.info "inside 1.if: \"if [ -r /etc/default/gpsd ...\""
   . /etc/default/gpsd
 elif [ -r /etc/sysconfig/gpsd ]; then
+  logger -t "gpsd_instrumented.hotplug" -p daemon.info "inside 1.elsif: 'if [ -r /etc/sysconfig/gpsd ...'"
   . /etc/sysconfig/gpsd
   GPSD_OPTIONS=$OPTIONS
   GPSD_SOCKET=$CONTROL_SOCKET
 fi
 
 if [ -n "$GPSD_OPTIONS" ]; then
+  logger -t "gpsd_instrumented.hotplug" -p daemon.info "inside 2: 'if [ -n \"\$GPSD_OPTIONS\" ...'"
   export GPSD_OPTIONS
 fi
 if [ -n "$GPSD_SOCKET" ]; then
+    logger -t "gpsd_instrumented.hotplug" -p daemon.info "inside 3: 'if [ -n \"\$GPSD_SOCKET\" ...'"
   export GPSD_SOCKET
 fi
 
 if [ -n "$USBAUTO" ]; then
+  logger -t "gpsd_instrumented.hotplug" -p daemon.info "inside 4: 'if [ -n \"\$USBAUTO\" ...'"
   [ "$USBAUTO" = "true" ] || exit 0
 fi
 
 if [ "$ACTION" = "remove" ] ; then
+    logger -t "gpsd_instrumented.hotplug" -p daemon.info "inside 5.then: 'if [ \"\$ACTION\" = \"remove\" ...'"
   if echo $DEVLINKS | grep -q /dev/gps; then
+	logger -t "gpsd_instrumented.hotplug" -p daemon.info "inside 5.then.then: 'if [ \"\$ACTION\" = \"remove\"' -> 'if echo \$DEVLINKS | grep -q /dev/gps;' : (no op)"
     :
   else
+    logger -t "gpsd_instrumented.hotplug" -p daemon.info "inside 5.then.else: 'if [ \"\$ACTION\" = \"remove\"' -> 'if echo \$DEVLINKS | grep -q /dev/gps;' : else ..."
     exit 0
   fi
 fi
 
-logger -t "gpsd.hotplug" -p daemon.info "$ACTION" "$DEVNAME"
+logger -t "gpsd_instrumented.hotplug" -p daemon.info "$ACTION" "$DEVNAME"
 
 if [ -z "$DEVNAME" ]
 then
-    logger -t gpsd.hotplug -p daemon.err "no device"
+    logger -t "gpsd_instrumented.hotplug" -p daemon.err "no device"
     exit 0
 fi
 
@@ -68,11 +76,11 @@ fi
 # actual wait/hotplug portion in the background.
 
 {
-    #logger -t gpsd.hotplug -p daemon.info "waiting for" $DEVNAME
+    logger -t "gpsd_instrumented.hotplug" -p daemon.info "waiting for" $DEVNAME
     while [ -x $DEVNAME ] 
     do
 	sleep 1
     done
-    #logger -t gpsd.hotplug -p daemon.info $DEVNAME "is active"
+    logger -t "gpsd_instrumented.hotplug" -p daemon.info $DEVNAME "is active"
     gpsdctl $ACTION $DEVNAME
 } &
