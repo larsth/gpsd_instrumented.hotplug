@@ -15,7 +15,7 @@ To use hotplug logging with gpsd:
         
     2. Enter the directory (from the directory where you issued the above command):
     
-        cd /lib/udev/
+        cd ./gpsd_instrumented.hotplug
         
     3. Copy the shell script to /lib/udev/ (but only if the file doesn´t exisists):
     
