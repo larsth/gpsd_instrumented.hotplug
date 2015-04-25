@@ -19,7 +19,7 @@ To use hotplug logging with gpsd:
         
     3. Copy the shell script to /lib/udev/ (but only if the file doesn´t exists):
     
-        sudo cp ./gpsd_instrumented.hotplug\
+        sudo cp ./gpsd_instrumented.hotplug /lib/udev/gpsd_instrumented.hotplug
         
     4. Change the owner to root, change the group to root, and change permissions:
     
